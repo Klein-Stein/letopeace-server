@@ -1,4 +1,4 @@
-package com.contedevel.server
+package com.kleinstein.server
 
 import io.ktor.application.*
 import io.ktor.response.*

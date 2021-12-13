@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.10-RC'
 }
 
-group 'com.contedevel'
+group 'com.kleinstein'
 version '0.0.1'
 
 application {
