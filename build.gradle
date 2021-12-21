@@ -1,10 +1,13 @@
 plugins {
     id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10-RC'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
 }
 
-group 'com.contedevel'
-version '0.0.1'
+def ktor_version='1.6.7'
+
+group 'com.kleinstein'
+version '0.0.2'
 
 application {
     mainClass = 'io.ktor.server.netty.EngineMain'
@@ -15,8 +18,10 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation "io.ktor:ktor-server-core:1.6.6"
-    implementation "io.ktor:ktor-server-netty:1.6.6"
-    implementation "ch.qos.logback:logback-classic:1.2.5"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-serialization:$ktor_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-datetime:0.3.1'
+    implementation 'ch.qos.logback:logback-classic:1.2.8'
 }

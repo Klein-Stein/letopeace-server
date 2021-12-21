@@ -6,9 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2021-12-21
+### Added
+- Trivial `/posts` routes
+- New third party dependencies
+### Updated
+- Third party dependencies
+
 ## [0.0.1] - 2021-12-09
 ### Added
 - Basic project structure
 
-[Unreleased]: https://github.com/ConteDevel/letopeace-server/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/ConteDevel/letopeace-server/releases/tag/v0.0.1
+[Unreleased]: https://github.com/Klein-Stein/letopeace-server/compare/v0.0.2...devel
+[0.0.1]: https://github.com/Klein-Stein/letopeace-server/releases/tag/v0.0.1...v0.0.2
+[0.0.1]: https://github.com/Klein-Stein/letopeace-server/releases/tag/v0.0.1
