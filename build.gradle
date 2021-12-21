@@ -7,7 +7,7 @@ plugins {
 def ktor_version='1.6.7'
 
 group 'com.kleinstein'
-version '0.0.1'
+version '0.0.2'
 
 application {
     mainClass = 'io.ktor.server.netty.EngineMain'

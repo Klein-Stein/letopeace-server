@@ -3,4 +3,4 @@ package com.kleinstein.server.domain.entities
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Page<TEntity>(val page: Long, val total: Long, val items: List<TEntity>)
+data class NewComment(val parentId: Long?, val msg: String, val createdBy: String)
