@@ -30,7 +30,6 @@ create table if not exists posts (
 	msg varchar(4096) not null,
 	created_by bigint not null,
 	created_at timestamptz default now(),
-	modified_at timestamptz default now(),
 	primary key(id),
 	constraint fk_posts_created_by foreign key(created_by) references users(id)
 );
@@ -40,7 +39,6 @@ create table if not exists post_likes (
 	post_id bigint not null,
 	user_id bigint not null,
 	created_at timestamptz default now(),
-	modified_at timestamptz default now(),
 	primary key(id),
 	constraint fk_post_likes_post_id foreign key(post_id) references posts(id) on update cascade on delete cascade,
 	constraint fk_post_likes_user_id foreign key(user_id) references users(id),
@@ -54,7 +52,6 @@ create table if not exists comments (
 	msg varchar(2048) not null,
 	created_by bigint not null,
 	created_at timestamptz default now(),
-	modified_at timestamptz default now(),
 	primary key(id),
 	constraint fk_comments_post_id foreign key(post_id) references posts(id) on update cascade on delete cascade,
 	constraint fk_comments_created_by foreign key(created_by) references users(id)
@@ -65,7 +62,6 @@ create table if not exists comment_likes (
 	comment_id bigint not null,
 	user_id bigint not null,
 	created_at timestamptz default now(),
-	modified_at timestamptz default now(),
 	primary key(id),
 	constraint fk_comment_likes_post_id foreign key(comment_id) references comments(id) on update cascade on delete cascade,
 	constraint fk_comment_likes_user_id foreign key(user_id) references users(id),
