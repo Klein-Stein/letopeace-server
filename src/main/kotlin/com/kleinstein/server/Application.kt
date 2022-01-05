@@ -13,11 +13,13 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module(@Suppress("UNUSED_PARAMETER") testing: Boolean = false) {
-    val sqlDbUrl = environment.config.property("database.sql.url").getString()
-    val sqlDbGateway: IDatabaseGateway = PostgresqlGateway(sqlDbUrl)
-    sqlDbGateway.connect()
+    val db: IDatabaseGateway = PostgresqlGateway(
+        url = environment.config.property("ktor.database.connection.url").getString(),
+        poolSize = environment.config.property("ktor.database.connection.pool").getString().toInt()
+    )
+    db.connect()
     environment.monitor.subscribe(ApplicationStopped) {
-        sqlDbGateway.disconnect()
+        db.disconnect()
     }
     install(ContentNegotiation) {
         json(Json {

@@ -3,20 +3,31 @@ package com.kleinstein.server.data.gateways.db
 import com.kleinstein.server.domain.entities.*
 import com.kleinstein.server.domain.exceptions.GatewayException
 import com.kleinstein.server.domain.gateways.IDatabaseGateway
-import java.sql.Connection
-import java.sql.DriverManager
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import org.jetbrains.exposed.sql.Database
 import java.sql.SQLException
 
 /**
  * This is a IDatabaseGateway implementation for PostgreSQL.
  * Database version: v1.0
  */
-class PostgresqlGateway(private val url: String): IDatabaseGateway {
-    lateinit var connection: Connection
+class PostgresqlGateway(url: String, poolSize: Int): IDatabaseGateway {
+    private var dataSource: HikariDataSource
+
+    init {
+        val config = HikariConfig().apply {
+            jdbcUrl = url
+            isAutoCommit = false
+            maximumPoolSize = poolSize
+            validate()
+        }
+        dataSource = HikariDataSource(config)
+    }
 
     override fun connect() {
         try {
-            this.connection = DriverManager.getConnection(url)
+            Database.connect(this.dataSource)
         } catch (ex: SQLException) {
             throw(GatewayException("Unable to connect to the database"))
         }
@@ -24,7 +35,7 @@ class PostgresqlGateway(private val url: String): IDatabaseGateway {
 
     override fun disconnect() {
         try {
-            this.connection.close()
+            this.dataSource.close()
         } catch (ex: SQLException) {
             throw(GatewayException("Failed to properly close the database connection"))
         }

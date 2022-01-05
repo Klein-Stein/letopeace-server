@@ -19,10 +19,16 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    // Ktor
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "io.ktor:ktor-serialization:$ktor_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-datetime:0.3.1'
+    // Logging
     implementation 'ch.qos.logback:logback-classic:1.2.10'
+    // Database
+    implementation 'com.zaxxer:HikariCP:5.0.0'
+    implementation 'org.jetbrains.exposed:exposed:0.17.14'
     implementation 'org.postgresql:postgresql:42.3.1'
+    implementation 'org.flywaydb:flyway-core:8.3.0'
 }
