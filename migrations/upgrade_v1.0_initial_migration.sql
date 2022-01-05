@@ -1,3 +1,10 @@
+create table if not exists db_info (
+    id varchar not null,
+    "value" varchar not null
+);
+
+insert into db_info (id, "value") values ('db_version', 'v1.0');
+
 create table if not exists genders (
 	id int primary key,
 	"name" varchar(6) not null
