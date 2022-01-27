@@ -2,7 +2,6 @@ package com.kleinstein.server.presentation.routes
 
 import com.kleinstein.server.domain.entities.NewUser
 import com.kleinstein.server.domain.entities.UserUpdate
-import com.kleinstein.server.domain.gateways.IDatabaseGateway
 import com.kleinstein.server.domain.usecases.*
 import io.ktor.application.*
 import io.ktor.request.*
@@ -14,16 +13,16 @@ import org.kodein.di.ktor.closestDI
 fun Route.deleteUserRoute() {
     delete("/users/{userId}") {
         val userId = call.parameters["userId"]!!.toLong()
-        val db by closestDI().instance<IDatabaseGateway>()
-        DeleteUserUseCase(db)(userId)
+        val useCase by closestDI().instance<DeleteUserUseCase>()
+        useCase(userId)
     }
 }
 
 fun Route.getUserRoute() {
     get("/users/{userId}") {
         val userId = call.parameters["userId"]!!.toLong()
-        val db by closestDI().instance<IDatabaseGateway>()
-        val user = GetUserUseCase(db)(userId)
+        val useCase by closestDI().instance<GetUserUseCase>()
+        val user = useCase(userId)
         call.respond(user)
     }
 }
@@ -32,8 +31,8 @@ fun Route.putUserRoute() {
     post("/users/{userId}") {
         val userId = call.parameters["userId"]!!.toLong()
         val data = call.receive<UserUpdate>()
-        val db by closestDI().instance<IDatabaseGateway>()
-        val user = UpdateUserUseCase(db)(userId, data)
+        val useCase by closestDI().instance<UpdateUserUseCase>()
+        val user = useCase(userId, data)
         call.respond(user)
     }
 }
@@ -42,8 +41,8 @@ fun Route.getUsersRoute() {
     get("/users") {
         val limit = call.request.queryParameters["limit"]?.toInt() ?: 25
         val since = call.request.queryParameters["since"]?.toLong()
-        val db by closestDI().instance<IDatabaseGateway>()
-        val resultPage = GetUsersUseCase(db)(limit, since)
+        val useCase by closestDI().instance<GetUsersUseCase>()
+        val resultPage = useCase(limit, since)
         call.respond(resultPage)
     }
 }
@@ -51,8 +50,8 @@ fun Route.getUsersRoute() {
 fun Route.postUserRoute() {
     post("/users") {
         val newUser = call.receive<NewUser>()
-        val db by closestDI().instance<IDatabaseGateway>()
-        val user = NewUserUseCase(db)(newUser)
+        val useCase by closestDI().instance<NewUserUseCase>()
+        val user = useCase(newUser)
         call.respond(user)
     }
 }
