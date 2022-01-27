@@ -2,7 +2,7 @@ package com.kleinstein.server.data.gateways.db
 
 import com.kleinstein.server.data.gateways.db.tables.*
 import com.kleinstein.server.domain.entities.*
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 
 
 fun ResultRow.toComment(): Comment {
@@ -67,4 +67,10 @@ fun ResultRow.toLiteUser(): LiteUser {
         nickname = this[UserTable.nickname],
         gender = this[UserTable.genderId]?.let { EGender.valueOf(it) },
     )
+}
+
+fun Query.andWhere(andPart: SqlExpressionBuilder.() -> Op<Boolean>) = adjustWhere {
+    val expr = Op.build { andPart() }
+    if(this == null) expr
+    else this and expr
 }

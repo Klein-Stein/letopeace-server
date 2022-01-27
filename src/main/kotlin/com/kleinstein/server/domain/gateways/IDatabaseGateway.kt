@@ -6,7 +6,7 @@ import com.kleinstein.server.domain.exceptions.DatabaseException
 interface IDatabaseGateway: IGateway {
 
     @Throws(DatabaseException::class)
-    fun addComment(newComment: NewComment, postId: Long, createdBy: Long): Comment
+    fun addComment(postId: Long, newComment: NewComment, createdBy: Long): Comment
 
     @Throws(DatabaseException::class)
     fun addCommentLike(commentId: Long, createdBy: Long): Like
@@ -21,41 +21,41 @@ interface IDatabaseGateway: IGateway {
     fun addUser(newUser: NewUser): User
 
     @Throws(DatabaseException::class)
-    fun deleteComment(id: Long)
+    fun deleteComment(commentId: Long)
 
     @Throws(DatabaseException::class)
-    fun deleteCommentLike(commentId: Long, createdBy: Long)
+    fun deleteCommentLike(likeId: Long)
 
     @Throws(DatabaseException::class)
-    fun deletePost(id: Long)
+    fun deletePost(postId: Long)
 
     @Throws(DatabaseException::class)
-    fun deletePostLike(postId: Long, createdBy: Long)
+    fun deletePostLike(likeId: Long)
 
     @Throws(DatabaseException::class)
-    fun deleteUser(id: Long)
+    fun deleteUser(userId: Long)
 
     @Throws(DatabaseException::class)
-    fun getCommentPage(postId: Long, limit: Int, since: Long): Page<Comment>
+    fun getCommentPage(postId: Long, limit: Int, since: Long?): Page<Comment>
 
     @Throws(DatabaseException::class)
-    fun getCommentLikePage(commentId: Long, limit: Int, since: Long): Page<Like>
+    fun getCommentLikePage(commentId: Long, limit: Int, since: Long?): Page<Like>
 
     @Throws(DatabaseException::class)
     fun getPost(postId: Long): Post
 
     @Throws(DatabaseException::class)
-    fun getPostPage(limit: Int, since: Long): Page<Post>
+    fun getPostPage(limit: Int, since: Long?): Page<Post>
 
     @Throws(DatabaseException::class)
-    fun getPostLikePage(postId: Long, limit: Int, since: Long): Page<Like>
+    fun getPostLikePage(postId: Long, limit: Int, since: Long?): Page<Like>
 
     @Throws(DatabaseException::class)
     fun getUser(userId: Long): User
 
     @Throws(DatabaseException::class)
-    fun getUserPage(limit: Int, since: Long): Page<LiteUser>
+    fun getUserPage(limit: Int, since: Long?): Page<LiteUser>
 
     @Throws(DatabaseException::class)
-    fun updateUser(user: UserUpdate, userId: Long): User
+    fun updateUser(userId: Long, data: UserUpdate): User
 }

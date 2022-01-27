@@ -7,9 +7,6 @@ import com.kleinstein.server.domain.gateways.IDatabaseGateway
 class GetCommentsUseCase(db: IDatabaseGateway) : UseCase(db) {
 
     operator fun invoke(postId: Long, limit: Int, since: Long?): Page<Comment> {
-        return Page(
-            data = arrayListOf(),
-            next = null
-        )
+        return this.db.getCommentPage(postId, limit, since)
     }
 }

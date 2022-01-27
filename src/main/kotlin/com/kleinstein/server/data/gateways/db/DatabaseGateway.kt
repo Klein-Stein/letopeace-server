@@ -25,7 +25,7 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
             maximumPoolSize = poolSize
             validate()
         }
-        dataSource = HikariDataSource(config)
+        this.dataSource = HikariDataSource(config)
     }
 
     override fun connect() {
@@ -40,7 +40,7 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
         }
     }
 
-    override fun addComment(newComment: NewComment, postId: Long, createdBy: Long): Comment {
+    override fun addComment(postId: Long, newComment: NewComment, createdBy: Long): Comment {
         return transaction {
             val row = CommentTable.insert {
                 it[this.postId] = postId
@@ -52,9 +52,9 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
                     it.update(commentsCount, commentsCount + 1)
                 }
             }
-            if (row != null) {
-                return@transaction row.toComment()
-            }
+
+            if (row != null) return@transaction row.toComment()
+
             throw DatabaseException("Failed to insert a comment")
         }
     }
@@ -70,9 +70,9 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
                     it.update(likesCount, likesCount + 1)
                 }
             }
-            if (row != null) {
-                return@transaction row.toCommentLike()
-            }
+
+            if (row != null) return@transaction row.toCommentLike()
+
             throw DatabaseException("Failed to insert a comment like")
         }
     }
@@ -83,9 +83,9 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
                 it[msg] = newPost.msg
                 it[this.createdBy] = createdBy
             }.resultedValues?.single()
-            if (row != null) {
-                return@transaction row.toPost()
-            }
+
+            if (row != null) return@transaction row.toPost()
+
             throw DatabaseException("Failed to insert a post")
         }
     }
@@ -101,9 +101,9 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
                     it.update(likesCount, likesCount + 1)
                 }
             }
-            if (row != null) {
-                return@transaction row.toPostLike()
-            }
+
+            if (row != null) return@transaction row.toPostLike()
+
             throw DatabaseException("Failed to insert a post like")
         }
     }
@@ -119,19 +119,19 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
                 it[phone] = newUser.phone
                 it[email] = newUser.email
             }.resultedValues?.single()
-            if (row != null) {
-                return@transaction row.toUser()
-            }
+
+            if (row != null) return@transaction row.toUser()
+
             throw DatabaseException("Failed to insert a user")
         }
     }
 
-    override fun deleteComment(id: Long) {
-        return transaction {
+    override fun deleteComment(commentId: Long) {
+        transaction {
             val postId = CommentTable.slice(CommentTable.postId).select {
-                CommentTable.id eq id
+                CommentTable.id eq commentId
             }.single()[CommentTable.postId]
-            CommentTable.deleteWhere { CommentTable.id eq id }
+            CommentTable.deleteWhere { CommentTable.id eq commentId }
             PostTable.update({ PostTable.id eq postId }) {
                 with(SqlExpressionBuilder) {
                     it.update(commentsCount, commentsCount - 1)
@@ -140,11 +140,12 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
         }
     }
 
-    override fun deleteCommentLike(commentId: Long, createdBy: Long) {
-        return transaction {
-            CommentLikeTable.deleteWhere {
-                (CommentLikeTable.commentId eq commentId) and (CommentLikeTable.createdBy eq createdBy)
-            }
+    override fun deleteCommentLike(likeId: Long) {
+        transaction {
+            val commentId = CommentLikeTable.slice(CommentLikeTable.commentId).select {
+                CommentLikeTable.id eq likeId
+            }.single()[CommentLikeTable.commentId]
+            CommentLikeTable.deleteWhere { (CommentLikeTable.id eq commentId) }
             CommentTable.update({ CommentTable.id eq commentId }) {
                 with(SqlExpressionBuilder) {
                     it.update(likesCount, likesCount - 1)
@@ -153,17 +154,18 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
         }
     }
 
-    override fun deletePost(id: Long) {
-        return transaction {
-            PostTable.deleteWhere { PostTable.id eq id }
+    override fun deletePost(postId: Long) {
+        transaction {
+            PostTable.deleteWhere { PostTable.id eq postId }
         }
     }
 
-    override fun deletePostLike(postId: Long, createdBy: Long) {
-        return transaction {
-            PostLikeTable.deleteWhere {
-                (PostLikeTable.postId eq postId) and (PostLikeTable.createdBy eq createdBy)
-            }
+    override fun deletePostLike(likeId: Long) {
+        transaction {
+            val postId = PostLikeTable.slice(PostLikeTable.postId).select {
+                PostLikeTable.id eq likeId
+            }.single()[PostLikeTable.postId]
+            PostLikeTable.deleteWhere { PostLikeTable.id eq likeId }
             PostTable.update({ PostTable.id eq postId }) {
                 with(SqlExpressionBuilder) {
                     it.update(likesCount, likesCount - 1)
@@ -172,36 +174,38 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
         }
     }
 
-    override fun deleteUser(id: Long) {
+    override fun deleteUser(userId: Long) {
         transaction {
-            UserTable.update({ UserTable.id eq id }) {
+            UserTable.update({ UserTable.id eq userId }) {
                 it[isDeleted] = true
             }
         }
     }
 
-    override fun getCommentPage(postId: Long, limit: Int, since: Long): Page<Comment> {
+    override fun getCommentPage(postId: Long, limit: Int, since: Long?): Page<Comment> {
         return transaction {
-            val comments = CommentTable.select {
-                (CommentTable.postId eq postId) and (CommentTable.id greater since)
-            }.limit(limit).orderBy(CommentTable.id).map {
-                it.toComment()
-            }
-            Page(
+            val query = CommentTable.select { CommentTable.postId eq postId }
+
+            if (since != null) query.andWhere { CommentTable.id greater since }
+
+            val comments = query.limit(limit).orderBy(CommentTable.id).map { it.toComment() }
+
+            return@transaction Page(
                 data = comments,
                 next = comments.maxOfOrNull { it.id }
             )
         }
     }
 
-    override fun getCommentLikePage(commentId: Long, limit: Int, since: Long): Page<Like> {
+    override fun getCommentLikePage(commentId: Long, limit: Int, since: Long?): Page<Like> {
         return transaction {
-            val likes = CommentLikeTable.select {
-                (CommentLikeTable.commentId eq commentId) and (CommentTable.id greater since)
-            }.limit(limit).orderBy(CommentLikeTable.id).map {
-                it.toCommentLike()
-            }
-            Page(
+            val query = CommentLikeTable.select { CommentLikeTable.commentId eq commentId }
+
+            if (since != null) query.andWhere { CommentTable.id greater since }
+
+            val likes = query.limit(limit).orderBy(CommentLikeTable.id).map { it.toCommentLike() }
+
+            return@transaction Page(
                 data = likes,
                 next = likes.maxOfOrNull { it.id }
             )
@@ -214,28 +218,30 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
         }
     }
 
-    override fun getPostPage(limit: Int, since: Long): Page<Post> {
+    override fun getPostPage(limit: Int, since: Long?): Page<Post> {
         return transaction {
-            val posts = PostTable.select {
-                PostTable.id greater since
-            }.limit(limit).orderBy(PostTable.id).map {
-                it.toPost()
-            }
-            Page(
+            val query = PostTable.selectAll()
+
+            if (since != null) query.andWhere { PostTable.id greater since }
+
+            val posts = query.limit(limit).orderBy(PostTable.id).map { it.toPost() }
+
+            return@transaction Page(
                 data = posts,
                 next = posts.maxOfOrNull { it.id }
             )
         }
     }
 
-    override fun getPostLikePage(postId: Long, limit: Int, since: Long): Page<Like> {
+    override fun getPostLikePage(postId: Long, limit: Int, since: Long?): Page<Like> {
         return transaction {
-            val likes = PostLikeTable.select {
-                (PostLikeTable.postId eq postId) and (PostLikeTable.id greater since)
-            }.limit(limit).orderBy(PostLikeTable.id).map {
-                it.toPostLike()
-            }
-            Page(
+            val query = PostLikeTable.select { PostLikeTable.postId eq postId }
+
+            if (since != null) query.andWhere { PostLikeTable.id greater since }
+
+            val likes = query.limit(limit).orderBy(PostLikeTable.id).map { it.toPostLike() }
+
+            return@transaction Page(
                 data = likes,
                 next = likes.maxOfOrNull { it.id }
             )
@@ -248,32 +254,34 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
         }
     }
 
-    override fun getUserPage(limit: Int, since: Long): Page<LiteUser> {
+    override fun getUserPage(limit: Int, since: Long?): Page<LiteUser> {
         return transaction {
-            val users = UserTable.select {
-                UserTable.id greater since
-            }.limit(limit).orderBy(UserTable.id).map {
-                it.toLiteUser()
-            }
-            Page(
+            val query = UserTable.selectAll()
+
+            if (since != null) query.andWhere { UserTable.id greater since }
+
+            val users = query.limit(limit).orderBy(UserTable.id).map { it.toLiteUser() }
+
+            return@transaction Page(
                 data = users,
                 next = users.maxOfOrNull { it.id }
             )
         }
     }
 
-    override fun updateUser(user: UserUpdate, userId: Long): User {
+    override fun updateUser(userId: Long, data: UserUpdate): User {
         return transaction {
             UserTable.update({ UserTable.id eq userId }) {
-                it[firstName] = user.firstName
-                it[lastName] = user.lastName
-                it[nickname] = user.nickname
-                it[genderId] = user.gender?.id
-                it[dateOfBirth] = user.dateOfBirth
-                it[phone] = user.phone
-                it[email] = user.email
+                it[firstName] = data.firstName
+                it[lastName] = data.lastName
+                it[nickname] = data.nickname
+                it[genderId] = data.gender?.id
+                it[dateOfBirth] = data.dateOfBirth
+                it[phone] = data.phone
+                it[email] = data.email
                 it[modifiedAt] = Clock.System.now()
             }
+
             return@transaction getUser(userId)
         }
     }

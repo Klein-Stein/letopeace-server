@@ -7,9 +7,6 @@ import com.kleinstein.server.domain.gateways.IDatabaseGateway
 class GetCommentLikesUseCase(db: IDatabaseGateway) : UseCase(db) {
 
     operator fun invoke(commentId: Long, limit: Int, since: Long?): Page<Like> {
-        return Page(
-            data = arrayListOf(),
-            next = null
-        )
+        return this.db.getCommentLikePage(commentId, limit, since)
     }
 }

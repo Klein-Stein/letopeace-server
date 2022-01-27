@@ -33,4 +33,6 @@ dependencies {
     implementation "org.jetbrains.exposed:exposed-kotlin-datetime:$exposed_version"
     runtimeOnly "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
     implementation 'org.postgresql:postgresql:42.3.1'
+    // Dependency injection
+    implementation 'org.kodein.di:kodein-di-framework-ktor-server-jvm:7.10.0'
 }

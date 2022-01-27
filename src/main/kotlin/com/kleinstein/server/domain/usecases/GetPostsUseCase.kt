@@ -7,9 +7,6 @@ import com.kleinstein.server.domain.gateways.IDatabaseGateway
 class GetPostsUseCase(db: IDatabaseGateway) : UseCase(db) {
 
     operator fun invoke(limit: Int, since: Long?): Page<Post> {
-        return Page(
-            data = arrayListOf(),
-            next = null
-        )
+        return this.db.getPostPage(limit, since)
     }
 }
