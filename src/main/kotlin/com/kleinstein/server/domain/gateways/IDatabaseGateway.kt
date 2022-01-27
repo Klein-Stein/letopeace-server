@@ -1,61 +1,61 @@
 package com.kleinstein.server.domain.gateways
 
 import com.kleinstein.server.domain.entities.*
-import com.kleinstein.server.domain.exceptions.GatewayException
+import com.kleinstein.server.domain.exceptions.DatabaseException
 
 interface IDatabaseGateway: IGateway {
 
-    @Throws(GatewayException::class)
-    fun addComment(comment: NewComment, postId: Long, createdBy: Long): Comment
+    @Throws(DatabaseException::class)
+    fun addComment(newComment: NewComment, postId: Long, createdBy: Long): Comment
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun addCommentLike(commentId: Long, createdBy: Long): Like
 
-    @Throws(GatewayException::class)
-    fun addPost(post: NewPost, createdBy: Long): Post
+    @Throws(DatabaseException::class)
+    fun addPost(newPost: NewPost, createdBy: Long): Post
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun addPostLike(postId: Long, createdBy: Long): Like
 
-    @Throws(GatewayException::class)
-    fun addUser(user: NewUser): User
+    @Throws(DatabaseException::class)
+    fun addUser(newUser: NewUser): User
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun deleteComment(id: Long)
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun deleteCommentLike(commentId: Long, createdBy: Long)
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun deletePost(id: Long)
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun deletePostLike(postId: Long, createdBy: Long)
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun deleteUser(id: Long)
 
-    @Throws(GatewayException::class)
-    fun getCommentPage(postId: Long, page: Int, size: Int): Page<Comment>
+    @Throws(DatabaseException::class)
+    fun getCommentPage(postId: Long, limit: Int, since: Long): Page<Comment>
 
-    @Throws(GatewayException::class)
-    fun getCommentLikePage(commentId: Long, page: Int, size: Int): Page<Like>
+    @Throws(DatabaseException::class)
+    fun getCommentLikePage(commentId: Long, limit: Int, since: Long): Page<Like>
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun getPost(postId: Long): Post
 
-    @Throws(GatewayException::class)
-    fun getPostPage(page: Int, size: Int): Page<Post>
+    @Throws(DatabaseException::class)
+    fun getPostPage(limit: Int, since: Long): Page<Post>
 
-    @Throws(GatewayException::class)
-    fun getPostLikePage(postId: Long, page: Int, size: Int): Page<Like>
+    @Throws(DatabaseException::class)
+    fun getPostLikePage(postId: Long, limit: Int, since: Long): Page<Like>
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun getUser(userId: Long): User
 
-    @Throws(GatewayException::class)
-    fun getUserPage(userId: Long): Page<LiteUser>
+    @Throws(DatabaseException::class)
+    fun getUserPage(limit: Int, since: Long): Page<LiteUser>
 
-    @Throws(GatewayException::class)
-    fun updateUser(user: UserUpdate): User
+    @Throws(DatabaseException::class)
+    fun updateUser(user: UserUpdate, userId: Long): User
 }

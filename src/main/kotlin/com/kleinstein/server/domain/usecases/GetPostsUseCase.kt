@@ -8,7 +8,7 @@ class GetPostsUseCase {
         return Page(
             page = page,
             total = Long.MAX_VALUE,
-            items = arrayListOf()
+            data = arrayListOf()
         )
     }
 }

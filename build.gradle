@@ -5,6 +5,7 @@ plugins {
 }
 
 def ktor_version='1.6.7'
+def exposed_version = '0.37.3'
 
 group 'com.kleinstein'
 version '0.0.2'
@@ -28,7 +29,8 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.10'
     // Database
     implementation 'com.zaxxer:HikariCP:5.0.0'
-    implementation 'org.jetbrains.exposed:exposed:0.17.14'
+    implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-kotlin-datetime:$exposed_version"
+    runtimeOnly "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
     implementation 'org.postgresql:postgresql:42.3.1'
-    implementation 'org.flywaydb:flyway-core:8.3.0'
 }

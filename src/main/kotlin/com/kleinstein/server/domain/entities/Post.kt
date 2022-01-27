@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class Post(
     val id: Long,
     val msg: String,
-    val creator: LiteUser,
+    val createdBy: Long,
     val likesCount: Int,
     val commentsCount: Int,
     val createdAt: Instant,

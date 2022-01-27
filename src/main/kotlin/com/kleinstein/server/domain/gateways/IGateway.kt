@@ -1,12 +1,12 @@
 package com.kleinstein.server.domain.gateways
 
-import com.kleinstein.server.domain.exceptions.GatewayException
+import com.kleinstein.server.domain.exceptions.DatabaseException
 
 interface IGateway {
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun connect()
 
-    @Throws(GatewayException::class)
+    @Throws(DatabaseException::class)
     fun disconnect()
 }

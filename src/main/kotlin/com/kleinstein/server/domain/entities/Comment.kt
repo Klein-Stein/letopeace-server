@@ -8,7 +8,7 @@ data class Comment(
     val id: Long,
     val postId: Long,
     val msg: String,
-    val creator: LiteUser,
+    val createdBy: Long,
     val likesCount: Int,
     val createdAt: Instant,
 )
