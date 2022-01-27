@@ -2,11 +2,13 @@ package com.kleinstein.server.domain.usecases
 
 import com.kleinstein.server.domain.entities.EGender
 import com.kleinstein.server.domain.entities.User
+import com.kleinstein.server.domain.gateways.IDatabaseGateway
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class GetUserUseCase {
+class GetUserUseCase(db: IDatabaseGateway) : UseCase(db) {
+
     operator fun invoke(userId: Long): User {
         return User(
             id = userId,

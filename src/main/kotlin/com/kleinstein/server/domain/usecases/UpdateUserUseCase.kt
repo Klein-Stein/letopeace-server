@@ -1,12 +1,14 @@
 package com.kleinstein.server.domain.usecases
 
 import com.kleinstein.server.domain.entities.*
+import com.kleinstein.server.domain.gateways.IDatabaseGateway
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.random.Random
 
-class UpdateUserUseCase {
+class UpdateUserUseCase(db: IDatabaseGateway) : UseCase(db) {
+
     operator fun invoke(userId: Long, userUpdate: UserUpdate): User {
         return User(
             id = Random.nextLong(1, Long.MAX_VALUE),

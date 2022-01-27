@@ -1,6 +1,8 @@
 package com.kleinstein.server.domain.usecases
 
-class DeletePostLikeUseCase {
+import com.kleinstein.server.domain.gateways.IDatabaseGateway
+
+class DeletePostLikeUseCase(db: IDatabaseGateway) : UseCase(db) {
     operator fun invoke(likeId: Long) {
     }
 }
