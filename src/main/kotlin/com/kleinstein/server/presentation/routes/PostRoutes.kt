@@ -41,7 +41,7 @@ fun Route.getPostsRoute() {
 
 fun Route.postPostRoute() {
     post("/posts") {
-        val createdBy = call.request.queryParameters["created_by"]!!.toLong()
+        val createdBy = call.request.queryParameters["createdBy"]!!.toLong()
         val newPost = call.receive<NewPost>()
         val useCase by closestDI().instance<NewPostUseCase>()
         val post = useCase(newPost, createdBy)

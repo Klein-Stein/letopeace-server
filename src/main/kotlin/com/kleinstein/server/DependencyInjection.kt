@@ -33,7 +33,7 @@ fun Application.installDi() {
         bind { provider { GetUserUseCase(instance()) } }
         bind { provider { NewCommentLikeUseCase(instance()) } }
         bind { provider { NewCommentUseCase(instance()) } }
-        bind { provider { GetPostLikesUseCase(instance()) } }
+        bind { provider { NewPostLikeUseCase(instance()) } }
         bind { provider { NewPostUseCase(instance()) } }
         bind { provider { NewUserUseCase(instance()) } }
         bind { provider { UpdateUserUseCase(instance()) } }

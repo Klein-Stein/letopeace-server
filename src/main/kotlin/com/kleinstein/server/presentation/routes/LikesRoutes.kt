@@ -46,9 +46,9 @@ fun Route.getPostLikesRoute() {
 }
 
 fun Route.postCommentLikeRoute() {
-    post("/comments/{commentId}/like") {
+    post("/comments/{commentId}/likes") {
         val commentId = call.parameters["commentId"]!!.toLong()
-        val createdBy = call.request.queryParameters["created_by"]!!.toLong()
+        val createdBy = call.request.queryParameters["createdBy"]!!.toLong()
         val useCase by closestDI().instance<NewCommentLikeUseCase>()
         val like = useCase(commentId, createdBy)
         call.respond(like)
@@ -56,7 +56,7 @@ fun Route.postCommentLikeRoute() {
 }
 
 fun Route.postPostLikeRoute() {
-    post("/posts/{postId}/like") {
+    post("/posts/{postId}/likes") {
         val postId = call.parameters["postId"]!!.toLong()
         val createdBy = call.request.queryParameters["createdBy"]!!.toLong()
         val useCase by closestDI().instance<NewPostLikeUseCase>()

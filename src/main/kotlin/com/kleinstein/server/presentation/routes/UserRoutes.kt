@@ -28,7 +28,7 @@ fun Route.getUserRoute() {
 }
 
 fun Route.putUserRoute() {
-    post("/users/{userId}") {
+    put("/users/{userId}") {
         val userId = call.parameters["userId"]!!.toLong()
         val data = call.receive<UserUpdate>()
         val useCase by closestDI().instance<UpdateUserUseCase>()

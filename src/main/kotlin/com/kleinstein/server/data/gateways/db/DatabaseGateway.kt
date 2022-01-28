@@ -256,7 +256,7 @@ class DatabaseGateway(url: String, poolSize: Int): IDatabaseGateway {
 
     override fun getUserPage(limit: Int, since: Long?): Page<LiteUser> {
         return transaction {
-            val query = UserTable.selectAll()
+            val query = UserTable.select { UserTable.isDeleted eq false }
 
             if (since != null) query.andWhere { UserTable.id greater since }
 

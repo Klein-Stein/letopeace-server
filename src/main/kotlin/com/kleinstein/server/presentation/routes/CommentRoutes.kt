@@ -22,7 +22,7 @@ fun Route.deleteCommentRoute() {
 fun Route.postCommentRoute() {
     post("/posts/{postId}/comments") {
         val postId = call.parameters["postId"]!!.toLong()
-        val createdBy = call.request.queryParameters["created_by"]!!.toLong()
+        val createdBy = call.request.queryParameters["createdBy"]!!.toLong()
         val newComment = call.receive<NewComment>()
         val useCase by closestDI().instance<NewCommentUseCase>()
         val comment = useCase(postId, newComment, createdBy)
