@@ -5,9 +5,10 @@ plugins {
 }
 
 def ktor_version='1.6.7'
+def exposed_version = '0.37.3'
 
 group 'com.kleinstein'
-version '0.0.2'
+version '0.0.3'
 
 application {
     mainClass = 'io.ktor.server.netty.EngineMain'
@@ -19,9 +20,19 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    // Ktor
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "io.ktor:ktor-serialization:$ktor_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-datetime:0.3.1'
-    implementation 'ch.qos.logback:logback-classic:1.2.8'
+    // Logging
+    implementation 'ch.qos.logback:logback-classic:1.2.10'
+    // Database
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-kotlin-datetime:$exposed_version"
+    runtimeOnly "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
+    implementation 'org.postgresql:postgresql:42.3.1'
+    // Dependency injection
+    implementation 'org.kodein.di:kodein-di-framework-ktor-server-jvm:7.10.0'
 }

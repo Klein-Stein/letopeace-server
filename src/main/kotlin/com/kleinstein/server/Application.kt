@@ -11,6 +11,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module(@Suppress("UNUSED_PARAMETER") testing: Boolean = false) {
+    installDi()
     install(ContentNegotiation) {
         json(Json {
             prettyPrint = true
