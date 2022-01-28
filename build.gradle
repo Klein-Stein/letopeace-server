@@ -8,7 +8,7 @@ def ktor_version='1.6.7'
 def exposed_version = '0.37.3'
 
 group 'com.kleinstein'
-version '0.0.2'
+version '0.0.3'
 
 application {
     mainClass = 'io.ktor.server.netty.EngineMain'
